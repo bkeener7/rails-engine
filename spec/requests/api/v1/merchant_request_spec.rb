@@ -25,14 +25,20 @@ describe 'Merchant API' do
     merchant1 = create(:merchant)
     get api_v1_merchant_path(merchant1)
 
-    merchant = JSON.parse(response.body, symbolize_names: true)
-
     expect(response).to be_successful
+
+    merchant = JSON.parse(response.body, symbolize_names: true)
 
     expect(merchant[:data]).to have_key(:id)
     expect(merchant[:data][:id]).to eq(merchant1.id.to_s)
 
     expect(merchant[:data][:attributes]).to have_key(:name)
     expect(merchant[:data][:attributes][:name]).to be_a(String)
+  end
+
+  it 'returns an error if id is invalid' do
+    get api_v1_merchant_path(100000)
+
+    expect(response).to have_http_status(:not_found)
   end
 end

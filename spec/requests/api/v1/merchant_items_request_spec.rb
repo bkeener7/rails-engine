@@ -10,6 +10,7 @@ describe 'Merchant Items API' do
 
     expect(response).to be_successful
 
+    expect(items).to be_a(Hash)
     expect(items[:data].count).to eq(10)
 
     items[:data].each do |item|
