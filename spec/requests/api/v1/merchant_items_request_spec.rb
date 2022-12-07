@@ -1,15 +1,15 @@
 require 'rails_helper'
 
-describe 'Item API' do
-  it 'sends a list of items' do
-    create_list(:item, 10)
-    get api_v1_items_path
-
-    expect(response).to be_successful
+describe 'Merchant Items API' do
+  it 'can get all items by a merchant by merchant id' do
+    merchant1 = create(:merchant)
+    create_list(:item, 10, merchant_id: merchant1.id)
+    get merchant_items_path(merchant1)
 
     items = JSON.parse(response.body, symbolize_names: true)
 
-    expect(items).to be_a(Hash)
+    expect(response).to be_successful
+
     expect(items[:data].count).to eq(10)
 
     items[:data].each do |item|
@@ -25,5 +25,11 @@ describe 'Item API' do
       expect(item[:attributes]).to have_key(:unit_price)
       expect(item[:attributes][:merchant_id]).to be_a(Integer)
     end
+  end
+
+  it 'returns an error if merchant id is invalid' do
+    get merchant_items_path(100000)
+
+    expect(response).to have_http_status(:not_found)
   end
 end
