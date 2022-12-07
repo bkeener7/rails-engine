@@ -1,13 +1,35 @@
 class Api::V1::ItemsController < ApplicationController
   def index
-    if params[:merchant_id]
-      if Merchant.exists?(params[:merchant_id])
-        render json: ItemSerializer.new(Item.where(merchant_id: params[:merchant_id]))
-      else
-        render json: { error: 'Merchant does not exist' }, status: :not_found
-      end
+    render json: ItemSerializer.new(Item.all)
+  end
+
+  def show
+    if Item.exists?(params[:id])
+      render json: ItemSerializer.new(Item.find(params[:id]))
     else
-      render json: ItemSerializer.new(Item.all)
+      render json: { error: 'Item does not exist' }, status: :not_found
     end
+  end
+
+  def create
+    render json: ItemSerializer.new(Item.create(item_params)), status: :created
+  end
+
+  def update
+    if Item.update(params[:id], item_params).save
+      render json: ItemSerializer.new(Item.find(params[:id]))
+    else
+      render json: { error: 'Does not exist' }, status: :not_found
+    end
+  end
+
+  def destroy
+    render json: Item.delete(params[:id])
+  end
+
+  private
+
+  def item_params
+    params.require(:item).permit(:name, :description, :unit_price, :merchant_id)
   end
 end
