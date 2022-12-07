@@ -15,6 +15,14 @@ class Api::V1::ItemsController < ApplicationController
     render json: ItemSerializer.new(Item.create(item_params)), status: :created
   end
 
+  def update
+    if Item.update(params[:id], item_params).save
+      render json: ItemSerializer.new(Item.find(params[:id]))
+    else
+      render json: { error: 'Does not exist' }, status: :not_found
+    end
+  end
+
   def destroy
     render json: Item.delete(params[:id])
   end
