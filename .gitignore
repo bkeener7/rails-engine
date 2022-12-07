@@ -25,3 +25,4 @@
 coverage
 .rubocop.yml
 .vscode/settings.json
+.DS_Store
