@@ -52,5 +52,30 @@ describe 'Item API' do
     get api_v1_item_path(100000)
 
     expect(response).to have_http_status(:not_found)
+    expect(response.body).to include('Item does not exist')
+  end
+
+  it 'can create a new item' do
+    merchant1 = create(:merchant)
+    item_params = { item: {
+      name: Faker::Camera.brand_with_model,
+      description: Faker::Hipster.sentence,
+      unit_price: Faker::Number.decimal(l_digits: 2),
+      merchant_id: merchant1.id
+    } }
+
+    post api_v1_items_path(item_params)
+
+    expect(response).to be_successful
+    expect(response).to have_http_status(:created)
+
+    expect(Item.last).to have_attributes(item_params[:item])
+  end
+
+  it 'can destroy an item' do
+    item1 = create(:item)
+
+    expect { delete api_v1_item_path(item1) }.to change(Item, :count).by(-1)
+    expect { Item.find(item1.id) }.to raise_exception(ActiveRecord::RecordNotFound)
   end
 end

@@ -40,5 +40,6 @@ describe 'Merchant API' do
     get api_v1_merchant_path(100000)
 
     expect(response).to have_http_status(:not_found)
+    expect(response.body).to include('Merchant does not exist')
   end
 end
