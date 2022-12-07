@@ -127,6 +127,7 @@ describe 'Item API' do
 
     expect(response).to have_http_status(:not_found)
     expect(response.body).to include('Does not exist')
+    item1.reload
     expect(item1).to_not have_attributes(item_params[:item])
   end
 end
