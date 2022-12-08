@@ -6,4 +6,8 @@ class Merchant < ApplicationRecord
   has_many :transactions, through: :invoices
 
   validates :name, presence: true
+
+  def self.find_merchant_fragment(params)
+    where('name ILIKE ?', "%#{params[:name]}%").first
+  end
 end

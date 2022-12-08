@@ -12,4 +12,18 @@ RSpec.describe Merchant, type: :model do
   describe 'validations' do
     it { should validate_presence_of :name }
   end
+
+  describe 'class methods' do
+    it 'can find names by partial matches' do
+      merchant1 = create(:merchant, name: 'Walter White')
+      merchant2 = create(:merchant, name: 'Hank Schrader')
+      merchant3 = create(:merchant, name: 'Gus Fring')
+
+      merchant_params = {
+        name: 'iTe'
+      }
+
+      expect(Merchant.find_merchant_fragment(merchant_params)).to eq(merchant1)
+    end
+  end
 end
